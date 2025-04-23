@@ -88,11 +88,34 @@ app.get('/api/data', (req, res) => {
 // Update data
 app.post('/api/data', (req, res) => {
     try {
-        fs.writeJsonSync(dbFile, req.body);
-        res.json({ success: true });
+        // Validate data structure
+        const data = req.body;
+        if (!data || typeof data !== 'object') {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Ungültiges Datenformat' 
+            });
+        }
+        
+        // Ensure all required arrays exist
+        const dbData = {
+            appointments: Array.isArray(data.appointments) ? data.appointments : [],
+            staff: Array.isArray(data.staff) ? data.staff : [],
+            teams: Array.isArray(data.teams) ? data.teams : [],
+            customers: Array.isArray(data.customers) ? data.customers : []
+        };
+        
+        fs.writeJsonSync(dbFile, dbData);
+        res.json({ 
+            success: true, 
+            message: 'Daten erfolgreich gespeichert' 
+        });
     } catch (error) {
         console.error('Error writing data:', error);
-        res.status(500).json({ error: 'Failed to write data' });
+        res.status(500).json({ 
+            success: false, 
+            error: 'Fehler beim Speichern der Daten' 
+        });
     }
 });
 

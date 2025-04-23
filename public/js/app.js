@@ -40,14 +40,6 @@ const tabButtons = document.querySelectorAll('.tab-btn');
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
-    // Remove kiosk mode button if it exists
-    setTimeout(() => {
-        const kioskButton = document.getElementById('kiosk-mode-btn');
-        if (kioskButton) {
-            kioskButton.remove();
-            console.log("Kiosk mode button removed");
-        }
-    }, 100);
     
     // Load data
     loadData();
