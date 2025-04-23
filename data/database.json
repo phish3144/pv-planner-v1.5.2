@@ -1,1 +1,69 @@
-{"appointments":[],"staff":[],"teams":[]}
+{
+  "appointments": [
+    {
+      "id": "1",
+      "title": "PV-Anlage Installation",
+      "location": "Musterstraße 1, 12345 Musterstadt",
+      "description": "Installation einer 10kW Anlage",
+      "start": "2025-04-23T08:00:00.000Z",
+      "end": "2025-04-23T16:00:00.000Z",
+      "staff_ids": ["1", "2"],
+      "team_ids": ["1"],
+      "status": "geplant"
+    },
+    {
+      "id": "2",
+      "title": "Wartung",
+      "location": "Beispielweg 42, 54321 Beispielstadt",
+      "description": "Jährliche Wartung der PV-Anlage",
+      "start": "2025-04-24T09:00:00.000Z",
+      "end": "2025-04-24T12:00:00.000Z",
+      "staff_ids": ["3"],
+      "team_ids": ["2"],
+      "status": "geplant"
+    }
+  ],
+  "staff": [
+    {
+      "id": "1",
+      "name": "Max Mustermann",
+      "position": "Monteur",
+      "email": "max@example.com",
+      "phone": "0123456789",
+      "color": "#4285F4",
+      "team_ids": ["1"]
+    },
+    {
+      "id": "2",
+      "name": "Anna Schmidt",
+      "position": "Monteur",
+      "email": "anna@example.com",
+      "phone": "0123456788",
+      "color": "#EA4335",
+      "team_ids": ["1"]
+    },
+    {
+      "id": "3",
+      "name": "Thomas Weber",
+      "position": "Monteur",
+      "email": "thomas@example.com",
+      "phone": "0123456787",
+      "color": "#FBBC05",
+      "team_ids": ["2"]
+    }
+  ],
+  "teams": [
+    {
+      "id": "1",
+      "name": "Team Nord",
+      "color": "#34A853",
+      "member_ids": ["1", "2"]
+    },
+    {
+      "id": "2",
+      "name": "Team Süd",
+      "color": "#9C27B0",
+      "member_ids": ["3"]
+    }
+  ]
+}

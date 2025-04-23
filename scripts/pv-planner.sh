@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # PV-Planer Installations- und Verwaltungsskript
-# Version 1.3.0
+# Version 1.5.1
 
 # Konfiguration
 APP_NAME="PV-Planer"
@@ -18,7 +18,7 @@ NC='\033[0m' # No Color
 
 # Hilfefunktion
 show_help() {
-    echo -e "${GREEN}PV-Planer Verwaltungsskript v1.3.0${NC}"
+    echo -e "${GREEN}PV-Planer Verwaltungsskript v1.5.1${NC}"
     echo ""
     echo "Verwendung: $0 [Befehl]"
     echo ""

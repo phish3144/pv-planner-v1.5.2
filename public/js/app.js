@@ -40,6 +40,14 @@ const tabButtons = document.querySelectorAll('.tab-btn');
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
+    // Remove kiosk mode button if it exists
+    setTimeout(() => {
+        const kioskButton = document.getElementById('kiosk-mode-btn');
+        if (kioskButton) {
+            kioskButton.remove();
+            console.log("Kiosk mode button removed");
+        }
+    }, 100);
     
     // Load data
     loadData();
@@ -52,7 +60,58 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Update UI based on login status
     updateUIForLoginStatus();
+    
+    // Set up delete button event listener
+    setupDeleteButtonListener();
 });
+
+// Set up delete button event listener
+function setupDeleteButtonListener() {
+    const deleteBtn = document.getElementById('delete-appointment-btn');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', handleAppointmentDelete);
+        
+        // Hide delete button when creating a new appointment
+        // Show it only when editing an existing appointment
+        deleteBtn.style.display = 'none';
+    }
+}
+
+// Handle appointment delete
+function handleAppointmentDelete() {
+    // Get appointment ID from form
+    const appointmentId = appointmentForm.dataset.appointmentId;
+    
+    if (!appointmentId) {
+        showNotification('Kein Termin zum Löschen ausgewählt', true);
+        return;
+    }
+    
+    // Confirm deletion
+    if (confirm('Sind Sie sicher, dass Sie diesen Termin löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.')) {
+        // Find appointment index
+        const index = appointments.findIndex(a => a.id === appointmentId);
+        
+        if (index !== -1) {
+            // Remove appointment from array
+            appointments.splice(index, 1);
+            
+            // Save data to server
+            saveData();
+            
+            // Show notification
+            showNotification('Termin erfolgreich gelöscht');
+            
+            // Close modal
+            modal.style.display = 'none';
+            
+            // Update calendar
+            renderCalendar();
+        } else {
+            showNotification('Termin konnte nicht gefunden werden', true);
+        }
+    }
+}
 
 // Load data from the server
 function loadData() {
@@ -899,6 +958,7 @@ function openAppointmentModal(date, appointment = null) {
     const endDateInput = document.getElementById('end-date');
     const endTimeInput = document.getElementById('end-time');
     const statusSelect = document.getElementById('status');
+    const deleteBtn = document.getElementById('delete-appointment-btn');
     
     // Clear previous values
     titleInput.value = '';
@@ -979,7 +1039,7 @@ function openAppointmentModal(date, appointment = null) {
         teamCheckbox.appendChild(label);
         teamSelection.appendChild(teamCheckbox);
     });
-    
+        
     // Add event listener to customer dropdown for auto-filling address and notes
     const customerSelect = document.getElementById('customer');
     if (customerSelect) {
@@ -1011,7 +1071,7 @@ function openAppointmentModal(date, appointment = null) {
         titleInput.value = appointment.title;
         locationInput.value = appointment.location;
         descriptionInput.value = appointment.description || '';
-        
+
         // Set customer if available
         if (appointment.customer_id) {
             const customerSelect = document.getElementById('customer');
@@ -1049,8 +1109,18 @@ function openAppointmentModal(date, appointment = null) {
                 }
             });
         }
+        
+        // Show delete button when editing an existing appointment
+        if (deleteBtn) {
+            deleteBtn.style.display = 'block';
+        }
     } else {
         delete appointmentForm.dataset.appointmentId;
+        
+        // Hide delete button when creating a new appointment
+        if (deleteBtn) {
+            deleteBtn.style.display = 'none';
+        }
     }
     
     // Show modal
@@ -1101,12 +1171,12 @@ function handleAppointmentSubmit(event) {
         team_ids: teamIds,
         status
     };
-    
+
     // Add customer ID if selected
     if (customerId) {
         appointment.customer_id = customerId;
     }
-    
+
     // Check if editing or creating
     const appointmentId = appointmentForm.dataset.appointmentId;
     
@@ -1125,7 +1195,7 @@ function handleAppointmentSubmit(event) {
         appointments.push(appointment);
     }
     
-    // Save data (in a real app, this would be an API call)
+    // Save data to server
     saveData();
     
     // Close modal
@@ -1226,7 +1296,7 @@ function renderStaffList() {
             openStaffForm(staffMember);
         });
         staffItem.appendChild(editButton);
-        
+
         // Add delete button
         const deleteButton = document.createElement('button');
         deleteButton.className = 'delete-btn';
@@ -1385,7 +1455,7 @@ function handleStaffSubmit(event) {
         });
     }
     
-    // Save data (in a real app, this would be an API call)
+    // Save data to server
     saveData();
     
     // Hide form
@@ -1441,7 +1511,7 @@ function renderTeamsList() {
             openTeamForm(team);
         });
         teamItem.appendChild(editButton);
-        
+
         // Add delete button
         const deleteButton = document.createElement('button');
         deleteButton.className = 'delete-btn';
@@ -1480,8 +1550,8 @@ function openTeamForm(team = null) {
     membersSelection.innerHTML = '';
     
     staff.forEach(staffMember => {
-        const memberCheckbox = document.createElement('div');
-        memberCheckbox.className = 'checkbox-item';
+        const staffCheckbox = document.createElement('div');
+        staffCheckbox.className = 'checkbox-item';
         
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
@@ -1499,9 +1569,9 @@ function openTeamForm(team = null) {
         colorIndicator.style.backgroundColor = staffMember.color;
         label.prepend(colorIndicator);
         
-        memberCheckbox.appendChild(checkbox);
-        memberCheckbox.appendChild(label);
-        membersSelection.appendChild(memberCheckbox);
+        staffCheckbox.appendChild(checkbox);
+        staffCheckbox.appendChild(label);
+        membersSelection.appendChild(staffCheckbox);
     });
     
     // If editing an existing team, populate with its data
@@ -1510,7 +1580,7 @@ function openTeamForm(team = null) {
         nameInput.value = team.name;
         colorInput.value = team.color;
         
-        // Check members of this team
+        // Check staff members in this team
         if (team.member_ids) {
             team.member_ids.forEach(memberId => {
                 const checkbox = document.getElementById(`team-member-${memberId}`);
@@ -1554,49 +1624,38 @@ function handleTeamSubmit(event) {
         // Find and update the team in the array
         const index = teams.findIndex(t => t.id === teamId);
         if (index !== -1) {
-            // Get previous member IDs to update staff team_ids
-            const previousMemberIds = teams[index].member_ids;
-            
-            // Update team
             teams[index] = team;
-            
-            // Update staff team memberships
-            staff.forEach(staffMember => {
-                // Remove from previous members if not in new members
-                if (previousMemberIds.includes(staffMember.id) && !memberIds.includes(staffMember.id)) {
-                    const teamIndex = staffMember.team_ids.indexOf(teamId);
-                    if (teamIndex !== -1) {
-                        staffMember.team_ids.splice(teamIndex, 1);
-                    }
-                }
-                
-                // Add to new members if not in previous members
-                if (!previousMemberIds.includes(staffMember.id) && memberIds.includes(staffMember.id)) {
-                    if (!staffMember.team_ids) {
-                        staffMember.team_ids = [];
-                    }
-                    staffMember.team_ids.push(teamId);
-                }
-            });
         }
+        
+        // Update staff team assignments
+        staff.forEach(staffMember => {
+            const teamIndex = staffMember.team_ids.indexOf(teamId);
+            
+            // Remove from staff if not selected
+            if (teamIndex !== -1 && !memberIds.includes(staffMember.id)) {
+                staffMember.team_ids.splice(teamIndex, 1);
+            }
+            
+            // Add to staff if selected and not already assigned
+            if (memberIds.includes(staffMember.id) && teamIndex === -1) {
+                staffMember.team_ids.push(teamId);
+            }
+        });
     } else {
         // Create new team with unique ID
         team.id = Date.now().toString();
         teams.push(team);
         
-        // Update staff team memberships
+        // Update staff team assignments
         memberIds.forEach(memberId => {
             const staffMember = staff.find(s => s.id === memberId);
             if (staffMember) {
-                if (!staffMember.team_ids) {
-                    staffMember.team_ids = [];
-                }
                 staffMember.team_ids.push(team.id);
             }
         });
     }
     
-    // Save data (in a real app, this would be an API call)
+    // Save data to server
     saveData();
     
     // Hide form
@@ -1609,28 +1668,27 @@ function handleTeamSubmit(event) {
     // Update calendar to reflect team changes
     renderCalendar();
 }
-
 // Save data to server
 function saveData() {
     // In a real application, this would be an API call
     // For now, we'll just log the data
     console.log('Saving data:', { appointments, staff, teams, customers });
     
-    // In a real application, you would send the data to the server
-    // fetch('/api/data', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({ appointments, staff, teams, customers }),
-    // })
-    // .then(response => response.json())
-    // .then(data => {
-    //     console.log('Success:', data);
-    // })
-    // .catch((error) => {
-    //     console.error('Error:', error);
-    // });
+    
+     fetch('/api/data', {
+         method: 'POST',
+         headers: {
+             'Content-Type': 'application/json',
+         },
+         body: JSON.stringify({ appointments, staff, teams, customers }),
+     })
+     .then(response => response.json())
+     .then(data => {
+         console.log('Success:', data);
+     })
+     .catch((error) => {
+         console.error('Error:', error);
+     });
 }
 
 // Helper function to check if a date is today
@@ -1641,9 +1699,11 @@ function isToday(date) {
            date.getFullYear() === today.getFullYear();
 }
 
-// Helper function to format time (e.g., "09:00")
+// Helper function to format time (HH:MM)
 function formatTime(date) {
-    return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${hours}:${minutes}`;
 }
 
 // Helper function to format date for input fields (YYYY-MM-DD)
@@ -1718,7 +1778,7 @@ function renderCustomersList() {
             openCustomerForm(customer);
         });
         customerItem.appendChild(editButton);
-        
+
         // Add delete button
         const deleteButton = document.createElement('button');
         deleteButton.className = 'delete-btn';
@@ -1832,7 +1892,7 @@ function handleCustomerSubmit(event) {
         customers.push(customer);
     }
     
-    // Save data (in a real app, this would be an API call)
+    // Save data to server
     saveData();
     
     // Hide form
@@ -1912,13 +1972,57 @@ function deleteCustomer(customerId) {
             delete appointment.customer_id;
         }
     });
+
+// Save data to servers
+function saveData() {
+    // Log data to console for debugging
+    console.log('Saving data:', { appointments, staff, teams, customers });
     
-    // Save data
-    saveData();
-    
-    // Re-render customers list
-    renderCustomersList();
-    
-    // Re-render calendar to update appointments
-    renderCalendar();
+    // Send data to the server for persistent storage
+    fetch('/api/data', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ appointments, staff, teams, customers }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Daten erfolgreich gespeichert:', data);
+        // Zeige kurze Bestätigung an
+        showNotification('Daten erfolgreich gespeichert');
+    })
+    .catch((error) => {
+        console.error('Fehler beim Speichern:', error);
+        // Zeige Fehlermeldung an
+        showNotification('Fehler beim Speichern der Daten', true);
+    });
 }
+
+// Hilfsfunktion zum Anzeigen von Benachrichtigungen
+function showNotification(message, isError = false) {
+    // Prüfe, ob bereits eine Benachrichtigung existiert und entferne sie
+    const existingNotification = document.getElementById('notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    // Erstelle Benachrichtigungselement
+    const notification = document.createElement('div');
+    notification.id = 'notification';
+    notification.className = isError ? 'notification error' : 'notification success';
+    notification.textContent = message;
+    
+    // Füge zur Seite hinzu
+    document.body.appendChild(notification);
+    
+    // Ausblenden nach 3 Sekunden
+    setTimeout(() => {
+        notification.classList.add('fade-out');
+        setTimeout(() => {
+            notification.remove();
+        }, 500);
+    }, 3000);
+}
+}
+
