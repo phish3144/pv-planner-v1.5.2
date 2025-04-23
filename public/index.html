@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PV-Planer</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-solar-panel"></i>
+                <h1>PV-Planer</h1>
+            </div>
+            <div class="view-controls">
+                <button id="day-view-btn" class="view-btn"><i class="fas fa-calendar-day"></i> Tag</button>
+                <button id="week-view-btn" class="view-btn active"><i class="fas fa-calendar-week"></i> Woche</button>
+                <button id="month-view-btn" class="view-btn"><i class="fas fa-calendar-alt"></i> Monat</button>
+            </div>
+            <div class="user-controls">
+                <button id="staff-btn" class="login-btn"><i class="fas fa-users"></i> Verwaltung</button>
+                <button id="login-btn" class="login-btn"><i class="fas fa-user"></i> Login</button>
+            </div>
+        </header>
+        
+        <div class="calendar-controls">
+            <div class="nav-buttons">
+                <button id="prev-btn" class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+                <div class="day-nav-buttons">
+                    <button id="prev-day-btn" class="day-nav-btn"><i class="fas fa-angle-left"></i> Tag</button>
+                    <button id="next-day-btn" class="day-nav-btn">Tag <i class="fas fa-angle-right"></i></button>
+                </div>
+            </div>
+            <h2 id="current-date">April 2025</h2>
+            <div class="nav-buttons">
+                <button id="today-btn" class="today-btn">Heute</button>
+                <div class="day-nav-buttons">
+                    <button id="prev-week-btn" class="day-nav-btn"><i class="fas fa-angle-left"></i> Woche</button>
+                    <button id="next-week-btn" class="day-nav-btn">Woche <i class="fas fa-angle-right"></i></button>
+                </div>
+                <button id="next-btn" class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+                <button id="new-appointment-btn" class="new-btn"><i class="fas fa-plus"></i> Neuer Termin</button>
+            </div>
+        </div>
+        
+        <main>
+            <div id="calendar-container">
+                <!-- Calendar will be rendered here by JavaScript -->
+            </div>
+        </main>
+        
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="modal-title">Termin hinzufügen</h2>
+                <form id="appointment-form">
+                    <div class="form-group">
+                        <label for="title">Titel:</label>
+                        <input type="text" id="title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer">Kunde:</label>
+                        <select id="customer" name="customer">
+                            <option value="">-- Kunde auswählen --</option>
+                            <!-- Customer options will be added here by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Ort:</label>
+                        <input type="text" id="location" name="location" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Beschreibung:</label>
+                        <textarea id="description" name="description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="start-date">Startdatum:</label>
+                        <input type="date" id="start-date" name="start-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="start-time">Startzeit:</label>
+                        <input type="time" id="start-time" name="start-time" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="end-date">Enddatum:</label>
+                        <input type="date" id="end-date" name="end-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="end-time">Endzeit:</label>
+                        <input type="time" id="end-time" name="end-time" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="staff">Monteure:</label>
+                        <div id="staff-selection" class="staff-selection">
+                            <!-- Staff checkboxes will be added here by JavaScript -->
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="teams">Teams:</label>
+                        <div id="team-selection" class="team-selection">
+                            <!-- Team checkboxes will be added here by JavaScript -->
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status:</label>
+                        <select id="status" name="status">
+                            <option value="geplant">Geplant</option>
+                            <option value="in-bearbeitung">In Bearbeitung</option>
+                            <option value="abgeschlossen">Abgeschlossen</option>
+                            <option value="storniert">Storniert</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="save-btn">Speichern</button>
+                        <button type="button" class="cancel-btn">Abbrechen</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div id="login-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Planer Login</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username">Benutzername:</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Passwort:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="login-submit-btn">Anmelden</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div id="staff-modal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Mitarbeiterverwaltung</h2>
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="staff-tab">Mitarbeiter</button>
+                    <button class="tab-btn" data-tab="teams-tab">Teams</button>
+                    <button class="tab-btn" data-tab="customers-tab">Kunden</button>
+                </div>
+                <div id="staff-tab" class="tab-content active">
+                    <div class="staff-list">
+                        <h3>Mitarbeiterliste</h3>
+                        <div id="staff-list-container">
+                            <!-- Staff list will be added here by JavaScript -->
+                        </div>
+                        <button id="add-staff-btn" class="add-btn"><i class="fas fa-plus"></i> Neuer Mitarbeiter</button>
+                    </div>
+                    <div id="staff-form-container" class="staff-form">
+                        <h3>Mitarbeiter hinzufügen/bearbeiten</h3>
+                        <form id="staff-form">
+                            <input type="hidden" id="staff-id" name="staff-id">
+                            <div class="form-group">
+                                <label for="staff-name">Name:</label>
+                                <input type="text" id="staff-name" name="staff-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="staff-position">Position:</label>
+                                <input type="text" id="staff-position" name="staff-position" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="staff-email">E-Mail:</label>
+                                <input type="email" id="staff-email" name="staff-email">
+                            </div>
+                            <div class="form-group">
+                                <label for="staff-phone">Telefon:</label>
+                                <input type="tel" id="staff-phone" name="staff-phone">
+                            </div>
+                            <div class="form-group">
+                                <label for="staff-color">Farbe:</label>
+                                <input type="color" id="staff-color" name="staff-color" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="staff-teams">Teams:</label>
+                                <div id="staff-teams-selection" class="team-selection">
+                                    <!-- Team checkboxes will be added here by JavaScript -->
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="save-btn">Speichern</button>
+                                <button type="button" class="cancel-staff-btn cancel-btn">Abbrechen</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div id="teams-tab" class="tab-content">
+                    <div class="teams-list">
+                        <h3>Teamliste</h3>
+                        <div id="teams-list-container">
+                            <!-- Teams list will be added here by JavaScript -->
+                        </div>
+                        <button id="add-team-btn" class="add-btn"><i class="fas fa-plus"></i> Neues Team</button>
+                    </div>
+                    <div id="team-form-container" class="team-form">
+                        <h3>Team hinzufügen/bearbeiten</h3>
+                        <form id="team-form">
+                            <input type="hidden" id="team-id" name="team-id">
+                            <div class="form-group">
+                                <label for="team-name">Name:</label>
+                                <input type="text" id="team-name" name="team-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="team-color">Farbe:</label>
+                                <input type="color" id="team-color" name="team-color" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="team-members">Mitglieder:</label>
+                                <div id="team-members-selection" class="staff-selection">
+                                    <!-- Staff checkboxes will be added here by JavaScript -->
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="save-btn">Speichern</button>
+                                <button type="button" class="cancel-team-btn cancel-btn">Abbrechen</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div id="customers-tab" class="tab-content">
+                    <div class="customers-list">
+                        <h3>Kundenliste</h3>
+                        <div id="customers-list-container">
+                            <!-- Customers list will be added here by JavaScript -->
+                        </div>
+                        <div class="customer-actions">
+                            <button id="add-customer-btn" class="add-btn"><i class="fas fa-plus"></i> Neuer Kunde</button>
+                        </div>
+                    </div>
+                    <div id="customer-form-container" class="customer-form">
+                        <h3>Kunde hinzufügen/bearbeiten</h3>
+                        <form id="customer-form">
+                            <input type="hidden" id="customer-id" name="customer-id">
+                            <div class="form-group">
+                                <label for="customer-name">Name:</label>
+                                <input type="text" id="customer-name" name="customer-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="customer-address">Adresse:</label>
+                                <input type="text" id="customer-address" name="customer-address" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="customer-contact">Ansprechpartner:</label>
+                                <input type="text" id="customer-contact" name="customer-contact">
+                            </div>
+                            <div class="form-group">
+                                <label for="customer-email">E-Mail:</label>
+                                <input type="email" id="customer-email" name="customer-email">
+                            </div>
+                            <div class="form-group">
+                                <label for="customer-phone">Telefon:</label>
+                                <input type="tel" id="customer-phone" name="customer-phone">
+                            </div>
+                            <div class="form-group">
+                                <label for="customer-notes">Notizen:</label>
+                                <textarea id="customer-notes" name="customer-notes"></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="submit" class="save-btn">Speichern</button>
+                                <button type="button" class="cancel-customer-btn cancel-btn">Abbrechen</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

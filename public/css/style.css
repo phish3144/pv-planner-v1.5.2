@@ -1,0 +1,661 @@
+/* Global styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header styles */
+header {
+    background-color: #2196F3;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo i {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+}
+
+.logo h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.view-controls, .user-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.view-btn, .login-btn {
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.view-btn:hover, .login-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.view-btn.active {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Calendar controls */
+.calendar-controls {
+    background-color: #f0f0f0;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.nav-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.day-nav-buttons {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.nav-btn, .day-nav-btn, .today-btn, .new-btn {
+    background-color: #e0e0e0;
+    border: none;
+    padding: 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.nav-btn:hover, .day-nav-btn:hover, .today-btn:hover, .new-btn:hover {
+    background-color: #d0d0d0;
+}
+
+.today-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.today-btn:hover {
+    background-color: #3e8e41;
+}
+
+.new-btn {
+    background-color: #2196F3;
+    color: white;
+}
+
+.new-btn:hover {
+    background-color: #0b7dda;
+}
+
+/* Main content */
+main {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+/* Calendar views */
+.calendar-week-view, .calendar-month-view {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.calendar-week-view th, .calendar-week-view td,
+.calendar-month-view th, .calendar-month-view td {
+    border: 1px solid #ddd;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.calendar-week-view th, .calendar-month-view th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.calendar-week-view .time-cell {
+    width: 60px;
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.calendar-week-view .day-cell {
+    height: 60px;
+    vertical-align: top;
+    position: relative;
+    background-color: #fff;
+}
+
+.calendar-month-view .month-day-cell {
+    height: 100px;
+    vertical-align: top;
+    position: relative;
+    background-color: #fff;
+}
+
+.calendar-month-view .empty-cell {
+    background-color: #f9f9f9;
+}
+
+.date-container {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.date-container.today {
+    background-color: #2196F3;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 0.5rem;
+}
+
+.month-appointments {
+    font-size: 0.8rem;
+    text-align: left;
+}
+
+/* Day view */
+.day-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.day-header {
+    background-color: #f0f0f0;
+    padding: 0.5rem;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.time-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.calendar-time-slot {
+    display: flex;
+    min-height: 60px;
+    border-bottom: 1px solid #ddd;
+    position: relative;
+}
+
+.calendar-time {
+    width: 60px;
+    background-color: #f0f0f0;
+    font-weight: bold;
+    padding: 0.5rem;
+    border-right: 1px solid #ddd;
+}
+
+/* Appointments */
+.appointment {
+    background-color: #bbdefb;
+    border-left: 4px solid #2196F3;
+    padding: 0.5rem;
+    margin: 0.25rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.appointment:hover {
+    background-color: #90caf9;
+}
+
+.appointment-title {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.appointment-time, .appointment-location {
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+}
+
+.appointment-staff, .appointment-teams {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0.5rem;
+}
+
+.assignment-label {
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.assignment-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.assignment-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.staff-indicator, .team-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.staff-name, .team-name {
+    font-size: 0.8rem;
+}
+
+.month-appointment {
+    background-color: #bbdefb;
+    border-left: 4px solid #2196F3;
+    padding: 0.25rem;
+    margin-bottom: 0.25rem;
+    border-radius: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.month-appointment:hover {
+    background-color: #90caf9;
+}
+
+/* Status indicators */
+.status-geplant {
+    border-left-color: #2196F3;
+}
+
+.status-in-bearbeitung {
+    border-left-color: #FF9800;
+}
+
+.status-abgeschlossen {
+    border-left-color: #4CAF50;
+}
+
+.status-storniert {
+    border-left-color: #F44336;
+    opacity: 0.7;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 1.5rem;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #777;
+}
+
+/* Form styles */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="time"],
+input[type="password"],
+textarea,
+select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.save-btn, .login-submit-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.save-btn:hover, .login-submit-btn:hover {
+    background-color: #3e8e41;
+}
+
+.cancel-btn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.cancel-btn:hover {
+    background-color: #d32f2f;
+}
+
+/* Staff and team selection */
+.staff-selection, .team-selection {
+    max-height: 150px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0.5rem;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.checkbox-item input[type="checkbox"] {
+    margin-right: 0.5rem;
+}
+
+.color-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+/* Staff management */
+.tabs {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 1rem;
+}
+
+.tab-btn {
+    background-color: #f0f0f0;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 4px 4px 0 0;
+    margin-right: 0.25rem;
+}
+
+.tab-btn.active {
+    background-color: #2196F3;
+    color: white;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: flex;
+    gap: 1rem;
+}
+
+.staff-list, .teams-list {
+    flex: 1;
+    border-right: 1px solid #ddd;
+    padding-right: 1rem;
+}
+
+.staff-form, .team-form {
+    flex: 2;
+    display: none;
+}
+
+.staff-item, .team-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.staff-info, .team-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.staff-name, .team-name {
+    font-weight: bold;
+}
+
+.staff-position, .member-count {
+    color: #777;
+    font-size: 0.8rem;
+}
+
+.edit-btn {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.edit-btn:hover {
+    background-color: #0b7dda;
+}
+
+.add-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.add-btn:hover {
+    background-color: #3e8e41;
+}
+
+/* Customer management styles */
+.customer-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.csv-import {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+}
+
+.csv-label {
+    font-weight: bold;
+}
+
+.csv-input {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.import-btn {
+    background-color: #FF9800;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.import-btn:hover {
+    background-color: #F57C00;
+}
+
+.customer-form {
+    display: none;
+}
+
+.customers-list {
+    flex: 1;
+    border-right: 1px solid #ddd;
+    padding-right: 1rem;
+}
+
+.customer-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.customer-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.customer-name {
+    font-weight: bold;
+}
+
+.customer-address {
+    color: #777;
+    font-size: 0.8rem;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .view-controls, .user-controls {
+        flex-wrap: wrap;
+    }
+    
+    .calendar-controls {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: stretch;
+    }
+    
+    .nav-buttons {
+        justify-content: space-between;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 5% auto;
+    }
+    
+    .tab-content.active {
+        flex-direction: column;
+    }
+    
+    .staff-list, .teams-list, .customers-list {
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        padding-right: 0;
+        padding-bottom: 1rem;
+    }
+}
