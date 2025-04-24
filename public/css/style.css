@@ -338,6 +338,7 @@ main {
 
 .status-abgeschlossen {
     border-left-color: #4CAF50;
+    background-color: #cbffce;
 }
 
 .status-storniert {
