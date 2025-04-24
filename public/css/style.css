@@ -266,9 +266,14 @@ main {
     margin-bottom: 0.25rem;
 }
 
-.appointment-time, .appointment-location {
+.appointment-time, .appointment-location, .appointment-description {
     font-size: 0.8rem;
     margin-bottom: 0.25rem;
+}
+
+.appointment-description {
+    font-style: italic;
+    color: #555;
 }
 
 .appointment-staff, .appointment-teams {

@@ -640,7 +640,15 @@ function renderWeekView() {
         
         const dayAppointments = appointments.filter(appointment => {
             const startDate = new Date(appointment.start);
-            return startDate >= dayStart && startDate <= dayEnd;
+            const endDate = new Date(appointment.end);
+            
+            // Show appointment if:
+            // 1. It starts on this day, OR
+            // 2. It ends on this day, OR
+            // 3. It spans over this day (starts before and ends after)
+            return (startDate >= dayStart && startDate <= dayEnd) || 
+                   (endDate >= dayStart && endDate <= dayEnd) ||
+                   (startDate < dayStart && endDate > dayEnd);
         });
         
         // Sort appointments by start time
@@ -844,6 +852,14 @@ function createAppointmentElement(appointment) {
     location.className = 'appointment-location';
     location.textContent = appointment.location;
     appointmentEl.appendChild(location);
+    
+    // Create description if available
+    if (appointment.description && appointment.description.trim() !== '') {
+        const description = document.createElement('div');
+        description.className = 'appointment-description';
+        description.textContent = appointment.description;
+        appointmentEl.appendChild(description);
+    }
     
     // Add staff indicators and names if available
     if (appointment.staff_ids && appointment.staff_ids.length > 0) {
