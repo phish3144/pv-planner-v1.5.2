@@ -8,7 +8,7 @@ APP_NAME="PV-Planer"
 APP_DIR="/opt/pv-planner"
 SERVICE_NAME="pv-planner"
 LOG_FILE="/var/log/pv-planner.log"
-PORT=80
+PORT=3000
 
 # Farben für Ausgaben
 GREEN='\033[0;32m'
