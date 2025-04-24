@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # PV-Planer Installations- und Verwaltungsskript
-# Version 1.5.1
+# Version 1.6.0
 
 # Konfiguration
 APP_NAME="PV-Planer"
 APP_DIR="/opt/pv-planner"
 SERVICE_NAME="pv-planner"
 LOG_FILE="/var/log/pv-planner.log"
-PORT=3000
+PORT=80
 
 # Farben für Ausgaben
 GREEN='\033[0;32m'
@@ -18,7 +18,7 @@ NC='\033[0m' # No Color
 
 # Hilfefunktion
 show_help() {
-    echo -e "${GREEN}PV-Planer Verwaltungsskript v1.5.1${NC}"
+    echo -e "${GREEN}PV-Planer Verwaltungsskript v1.6.0${NC}"
     echo ""
     echo "Verwendung: $0 [Befehl]"
     echo ""

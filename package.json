@@ -1,6 +1,6 @@
 {
   "name": "pv-planner",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Personalplanungssoftware für PV-Installationsbetriebe",
   "main": "server.js",
   "scripts": {
@@ -10,10 +10,9 @@
   "keywords": [
     "pv",
     "planer",
-    "personal",
-    "raspberry-pi"
+    "personal"
   ],
-  "author": "Manus AI",
+  "author": "Finn Bach",
   "license": "MIT",
   "dependencies": {
     "express": "^4.17.1",
