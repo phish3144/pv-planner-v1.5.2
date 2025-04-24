@@ -148,6 +148,11 @@ main {
     font-weight: bold;
 }
 
+.calendar-week-view th.today {
+    background-color: #2196F3;
+    color: white;
+}
+
 .calendar-week-view .time-cell {
     width: 60px;
     background-color: #f0f0f0;
@@ -155,10 +160,19 @@ main {
 }
 
 .calendar-week-view .day-cell {
-    height: 60px;
     vertical-align: top;
     position: relative;
     background-color: #fff;
+}
+
+.calendar-week-view .full-day-cell {
+    height: 300px;
+    overflow-y: auto;
+}
+
+.calendar-week-view .today-cell {
+    background-color: #e3f2fd;
+    border: 2px solid #2196F3;
 }
 
 .calendar-month-view .month-day-cell {

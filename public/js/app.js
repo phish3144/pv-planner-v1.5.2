@@ -578,12 +578,7 @@ function renderWeekView() {
     const headerRow = document.createElement('tr');
     headerRow.className = 'calendar-header';
     
-    // Add time column header
-    const timeHeader = document.createElement('th');
-    timeHeader.textContent = 'Zeit';
-    headerRow.appendChild(timeHeader);
-    
-    // Add day columns
+    // Add day columns (no time column needed anymore)
     for (let i = 0; i < 7; i++) {
         const dayDate = new Date(firstDayOfWeek);
         dayDate.setDate(firstDayOfWeek.getDate() + i);
@@ -606,57 +601,62 @@ function renderWeekView() {
     thead.appendChild(headerRow);
     table.appendChild(thead);
     
-    // Create body with time slots
+    // Create body with a single row for full-day events
     const tbody = document.createElement('tbody');
+    const row = document.createElement('tr');
+    row.className = 'full-day-row';
     
-    // Create rows for each hour (from 6:00 to 19:00)
-    for (let hour = 6; hour < 20; hour++) {
-        const row = document.createElement('tr');
+    // Add day cells
+    for (let i = 0; i < 7; i++) {
+        const dayDate = new Date(firstDayOfWeek);
+        dayDate.setDate(firstDayOfWeek.getDate() + i);
         
-        // Add time cell
-        const timeCell = document.createElement('td');
-        timeCell.className = 'time-cell';
-        timeCell.textContent = `${hour}:00`;
-        row.appendChild(timeCell);
+        const cell = document.createElement('td');
+        cell.className = 'day-cell full-day-cell';
         
-        // Add day cells
-        for (let i = 0; i < 7; i++) {
-            const dayDate = new Date(firstDayOfWeek);
-            dayDate.setDate(firstDayOfWeek.getDate() + i);
-            dayDate.setHours(hour, 0, 0, 0);
-            
-            const cell = document.createElement('td');
-            cell.className = 'day-cell';
-            cell.dataset.date = dayDate.toISOString();
-            
-            // Add click event for planners to add appointments
-            if (isLoggedIn) {
-                cell.addEventListener('click', () => {
-                    openAppointmentModal(dayDate);
-                });
-            }
-            
-            // Add appointments for this time slot
-            const cellStart = new Date(dayDate);
-            const cellEnd = new Date(dayDate);
-            cellEnd.setHours(hour + 1, 0, 0, 0);
-            
-            const cellAppointments = appointments.filter(appointment => {
-                const startDate = new Date(appointment.start);
-                return startDate >= cellStart && startDate < cellEnd;
-            });
-            
-            cellAppointments.forEach(appointment => {
-                const appointmentEl = createAppointmentElement(appointment);
-                cell.appendChild(appointmentEl);
-            });
-            
-            row.appendChild(cell);
+        // Highlight current day
+        if (isToday(dayDate)) {
+            cell.classList.add('today-cell');
         }
         
-        tbody.appendChild(row);
+        cell.dataset.date = dayDate.toISOString();
+        
+        // Add click event for planners to add appointments
+        if (isLoggedIn) {
+            cell.addEventListener('click', () => {
+                // Set default time to 9:00 AM
+                const appointmentDate = new Date(dayDate);
+                appointmentDate.setHours(9, 0, 0, 0);
+                openAppointmentModal(appointmentDate);
+            });
+        }
+        
+        // Add appointments for this day
+        const dayStart = new Date(dayDate);
+        dayStart.setHours(0, 0, 0, 0);
+        
+        const dayEnd = new Date(dayDate);
+        dayEnd.setHours(23, 59, 59, 999);
+        
+        const dayAppointments = appointments.filter(appointment => {
+            const startDate = new Date(appointment.start);
+            return startDate >= dayStart && startDate <= dayEnd;
+        });
+        
+        // Sort appointments by start time
+        dayAppointments.sort((a, b) => {
+            return new Date(a.start) - new Date(b.start);
+        });
+        
+        dayAppointments.forEach(appointment => {
+            const appointmentEl = createAppointmentElement(appointment);
+            cell.appendChild(appointmentEl);
+        });
+        
+        row.appendChild(cell);
     }
     
+    tbody.appendChild(row);
     table.appendChild(tbody);
     calendarContainer.appendChild(table);
 }
