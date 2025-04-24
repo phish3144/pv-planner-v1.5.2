@@ -65,6 +65,35 @@ document.addEventListener('DOMContentLoaded', () => {
     setupDeleteButtonListener();
 });
 
+
+// Hilfsfunktion zum Anzeigen von Benachrichtigungen
+function showNotification(message, isError = false) {
+    // Prüfe, ob bereits eine Benachrichtigung existiert und entferne sie
+    const existingNotification = document.getElementById('notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    // Erstelle Benachrichtigungselement
+    const notification = document.createElement('div');
+    notification.id = 'notification';
+    notification.className = isError ? 'notification error' : 'notification success';
+    notification.textContent = message;
+    
+    // Füge zur Seite hinzu
+    document.body.appendChild(notification);
+    
+    // Ausblenden nach 3 Sekunden
+    setTimeout(() => {
+        notification.classList.add('fade-out');
+        setTimeout(() => {
+            notification.remove();
+        }, 500);
+    }, 3000);
+}
+
+
+
 // Set up delete button event listener
 function setupDeleteButtonListener() {
     const deleteBtn = document.getElementById('delete-appointment-btn');
@@ -2015,30 +2044,6 @@ function saveData() {
     });
 }
 
-// Hilfsfunktion zum Anzeigen von Benachrichtigungen
-function showNotification(message, isError = false) {
-    // Prüfe, ob bereits eine Benachrichtigung existiert und entferne sie
-    const existingNotification = document.getElementById('notification');
-    if (existingNotification) {
-        existingNotification.remove();
-    }
-    
-    // Erstelle Benachrichtigungselement
-    const notification = document.createElement('div');
-    notification.id = 'notification';
-    notification.className = isError ? 'notification error' : 'notification success';
-    notification.textContent = message;
-    
-    // Füge zur Seite hinzu
-    document.body.appendChild(notification);
-    
-    // Ausblenden nach 3 Sekunden
-    setTimeout(() => {
-        notification.classList.add('fade-out');
-        setTimeout(() => {
-            notification.remove();
-        }, 500);
-    }, 3000);
-}
+
 }
 
